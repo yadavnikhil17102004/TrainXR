@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { useExerciseAnalysis } from '../Hooks/useExerciseAnalysis';
 import { toast } from 'sonner';
+import { Camera, Video, Square } from 'lucide-react';
 
 interface RecordSessionModalProps {
   isOpen: boolean;
@@ -105,65 +106,68 @@ export function RecordSessionModal({ isOpen, onClose, onSave }: RecordSessionMod
     setSets(3);
     setReps(10);
     onClose();
-  }, [onClose]);
+  }, [onClose, clearAnalysis]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md dark:bg-gray-800 dark:border-gray-700">
         <DialogHeader>
-          <DialogTitle>Record Exercise Session</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="dark:text-white">Record Exercise Session</DialogTitle>
+          <DialogDescription className="dark:text-gray-400">
             Record yourself performing an exercise to get real-time feedback.
           </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="exercise-type">Exercise Type</Label>
+            <Label htmlFor="exercise-type" className="dark:text-gray-300">Exercise Type</Label>
             <Select value={exerciseType} onValueChange={setExerciseType}>
-              <SelectTrigger id="exercise-type">
+              <SelectTrigger id="exercise-type" className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 <SelectValue placeholder="Select exercise" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="squat">Squat</SelectItem>
-                <SelectItem value="deadlift">Deadlift</SelectItem>
-                <SelectItem value="pushup">Push-up</SelectItem>
+              <SelectContent className="dark:bg-gray-700 dark:border-gray-600">
+                <SelectItem value="squat" className="dark:text-white dark:focus:bg-gray-600">Squat</SelectItem>
+                <SelectItem value="deadlift" className="dark:text-white dark:focus:bg-gray-600">Deadlift</SelectItem>
+                <SelectItem value="pushup" className="dark:text-white dark:focus:bg-gray-600">Push-up</SelectItem>
               </SelectContent>
             </Select>
           </div>
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="sets">Sets</Label>
+              <Label htmlFor="sets" className="dark:text-gray-300">Sets</Label>
               <Input
                 id="sets"
                 type="number"
                 min="1"
                 value={sets}
                 onChange={(e) => setSets(parseInt(e.target.value) || 1)}
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="reps">Reps</Label>
+              <Label htmlFor="reps" className="dark:text-gray-300">Reps</Label>
               <Input
                 id="reps"
                 type="number"
                 min="1"
                 value={reps}
                 onChange={(e) => setReps(parseInt(e.target.value) || 1)}
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
           </div>
           
           <div className="space-y-2">
-            <Label>Record Video</Label>
-            <div className="border rounded-lg overflow-hidden bg-black aspect-video flex items-center justify-center">
+            <Label className="dark:text-gray-300">Record Video</Label>
+            <div className="border rounded-lg overflow-hidden bg-black aspect-video flex items-center justify-center dark:border-gray-600">
               {isRecording ? (
                 <video ref={videoRef} autoPlay muted className="w-full h-full object-cover" />
               ) : videoBlob ? (
                 <video src={URL.createObjectURL(videoBlob)} controls className="w-full h-full object-cover" />
               ) : (
                 <div className="text-white text-center">
+                  <Video className="h-12 w-12 mx-auto mb-2 opacity-70" />
                   <p>Camera preview will appear here</p>
                   <p className="text-sm text-gray-400 mt-1">Click Start Recording</p>
                 </div>
@@ -172,11 +176,21 @@ export function RecordSessionModal({ isOpen, onClose, onSave }: RecordSessionMod
             
             <div className="flex gap-2">
               {!isRecording ? (
-                <Button onClick={startRecording} className="flex-1">
+                <Button 
+                  onClick={startRecording} 
+                  className="flex-1 dark:bg-accent dark:hover:bg-accent/90"
+                  disabled={isRecording}
+                >
+                  <Camera className="mr-2 h-4 w-4" />
                   Start Recording
                 </Button>
               ) : (
-                <Button onClick={stopRecording} variant="destructive" className="flex-1">
+                <Button 
+                  onClick={stopRecording} 
+                  variant="destructive" 
+                  className="flex-1"
+                >
+                  <Square className="mr-2 h-4 w-4" />
                   Stop Recording
                 </Button>
               )}
@@ -184,15 +198,15 @@ export function RecordSessionModal({ isOpen, onClose, onSave }: RecordSessionMod
           </div>
           
           {analysisResult && (
-            <div className="border rounded-lg p-4 bg-muted">
-              <h3 className="font-semibold mb-2">Analysis Results</h3>
+            <div className="border rounded-lg p-4 bg-muted dark:bg-gray-700 dark:border-gray-600">
+              <h3 className="font-semibold mb-2 dark:text-white">Analysis Results</h3>
               <div className="space-y-1 text-sm">
-                <p>Completed Reps: {analysisResult.completed_reps}/{analysisResult.planned_reps}</p>
-                <p>Form Score: {analysisResult.form_score}/100</p>
+                <p className="dark:text-gray-300">Completed Reps: <span className="font-medium">{analysisResult.completed_reps}</span>/{analysisResult.planned_reps}</p>
+                <p className="dark:text-gray-300">Form Score: <span className="font-medium">{analysisResult.form_score}</span>/100</p>
                 {analysisResult.mistakes.length > 0 && (
                   <div>
-                    <p>Mistakes:</p>
-                    <ul className="list-disc pl-5">
+                    <p className="font-medium dark:text-gray-300">Mistakes:</p>
+                    <ul className="list-disc pl-5 dark:text-gray-300">
                       {analysisResult.mistakes.map((mistake, index) => (
                         <li key={index}>{mistake.description}</li>
                       ))}
@@ -204,19 +218,24 @@ export function RecordSessionModal({ isOpen, onClose, onSave }: RecordSessionMod
           )}
           
           {error && (
-            <div className="text-red-500 text-sm">
+            <div className="text-red-500 text-sm dark:text-red-400">
               Error: {error}
             </div>
           )}
         </div>
         
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={handleClose}>
+          <Button 
+            variant="outline" 
+            onClick={handleClose}
+            className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          >
             Cancel
           </Button>
           <Button 
             onClick={handleAnalyze} 
             disabled={!videoBlob || !exerciseType || isAnalyzing}
+            className="dark:bg-accent dark:hover:bg-accent/90"
           >
             {isAnalyzing ? 'Analyzing...' : 'Analyze & Save'}
           </Button>
