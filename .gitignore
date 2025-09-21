@@ -1,0 +1,118 @@
+# ============================================================================
+# TrainXR Project .gitignore
+# AI-Powered Exercise Counter with Pose Estimation
+# ============================================================================
+
+# Python
+# ----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+# ----------------------------------------------------------------------------
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+myenv/
+evn/
+.env
+.venv
+
+# IDE & Editor Files
+# ----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+# ----------------------------------------------------------------------------
+.ipynb_checkpoints
+
+# Computer Vision & ML Files
+# ----------------------------------------------------------------------------
+# Large model files
+*.h5
+*.hdf5
+*.pb
+*.pth
+*.onnx
+*.tflite
+*.model
+
+# Dataset and media files (uncomment if you want to ignore)
+# videos/*.mp4
+# videos/*.avi
+# videos/*.mov
+# images/*.jpg
+# images/*.jpeg
+# images/*.png
+# data/
+
+# Temporary and cache files
+# ----------------------------------------------------------------------------
+*.tmp
+*.temp
+*.log
+*.cache
+.coverage
+.pytest_cache/
+.tox/
+
+# OS Generated Files
+# ----------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project Specific
+# ----------------------------------------------------------------------------
+# Backup files
+*.bak
+*.backup
+
+# Output directories
+output/
+results/
+recordings/
+
+# Configuration files with sensitive data
+config.ini
+secrets.json
+.env.local
+.env.production
+
+# Test files and temporary scripts
+test_*.py
+temp_*.py
+scratch.py
+debug.py
