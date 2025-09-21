@@ -65,19 +65,28 @@ trainxr/
 
 ## 🧠 System Architecture Overview
 
-### 1. Frontend (Flutter App)
-- User logs workout or records video
-- Sends data to backend API
+### 1. Frontend (Next.js)
+- Modern React-based web application
+- TypeScript for type safety
+- Tailwind CSS for styling
+- Real-time exercise tracking interface
+- Records video through browser API
+- Communicates with backend through RESTful API
 
 ### 2. Backend API (FastAPI)
-- Exposes endpoints for exercise analysis
-- Receives workout data and optional video
-- Routes requests to appropriate exercise counter modules
+- RESTful API endpoints for exercise analysis
+- Processes video uploads
+- Handles exercise detection and counting
+- Returns real-time feedback
+- CORS enabled for frontend communication
 
 ### 3. Exercise Modules
-- Each exercise has its own counter module
-- Uses MediaPipe and OpenCV for pose estimation
-- Counts reps and provides form feedback
+- Modular exercise detection system
+- MediaPipe for pose estimation
+- OpenCV for video processing
+- Real-time form analysis
+- Exercise-specific counting algorithms
+- Customizable feedback generation
 
 ### 4. Video Processing
 - Handles video input/output
@@ -98,8 +107,12 @@ trainxr/
 
 ## 🛠️ Tech Stack
 
+- **Frontend**: Next.js + TypeScript + Tailwind CSS
 - **Backend**: Python + FastAPI
 - **AI/Tracking**: MediaPipe + OpenCV
 - **Database**: SQLite (local), PostgreSQL (server)
-- **Frontend**: Flutter (mobile app)
 - **Communication**: REST API (HTTP/JSON)
+- **Development Tools**: 
+  - ESLint + Prettier (code formatting)
+  - Git + GitHub (version control)
+  - VS Code (recommended IDE)
