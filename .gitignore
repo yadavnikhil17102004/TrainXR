@@ -1,10 +1,23 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
+.Python
+env/
+.env
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+.coverage
+.coverage.*
+.pytest_cache/
+htmlcov/
+coverage/
+*.pyc
 
 # Distribution / packaging
 .Python
@@ -99,7 +112,7 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
-# Node/Next.js
+# Node.js / Frontend
 Frontend/node_modules/
 Frontend/.next/
 Frontend/out/
@@ -108,9 +121,17 @@ Frontend/build/
 Frontend/.turbo/
 Frontend/coverage/
 Frontend/storybook-static/
-Frontend/.env
-Frontend/.env.*
-Frontend/!.env.example
+Frontend/.env*
+!Frontend/.env.example
+Frontend/.vercel/
+Frontend/dist/
+Frontend/.next/**/*
+node_modules/
+.next/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
 # Package manager files
 Frontend/package-lock.json
@@ -140,15 +161,32 @@ yarn-error.log*
 *.bak
 
 # Project specific
+# Video files
 videos/*
 !videos/.gitkeep
-uploads/
 *.mp4
 *.avi
 *.mov
-backend/fitness_app.db
-backend/uploads/
+*.wmv
+*.flv
+
+# Uploads and media
+backend/uploads/*
+!backend/uploads/.gitkeep
 uploads/
+
+# Database
+backend/fitness_app.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # TypeScript
 *.tsbuildinfo
@@ -197,11 +235,16 @@ temp/
 tmp/
 *.tmp
 
-# IDE files
+# IDE / Editor files
 .vscode/
 .idea/
 *.swp
 *.swo
+*.swn
+*.bak
+.vs/
+*.sublime-workspace
+*.sublime-project
 
 # OS generated files
 .DS_Store
@@ -211,6 +254,7 @@ tmp/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
 # Logs
 logs/

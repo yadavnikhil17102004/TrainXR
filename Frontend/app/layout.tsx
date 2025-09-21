@@ -14,14 +14,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className="min-h-screen bg-background text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="flex flex-col md:flex-row min-h-screen">
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

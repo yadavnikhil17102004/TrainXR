@@ -55,13 +55,24 @@ The frontend will be available at `http://localhost:3000`
 
 ## Running Both Services
 
-You can start both services simultaneously using the provided batch script:
+You can run both services in separate terminal windows:
 
+### Running the Backend
+```powershell
+cd "Y:\Nikhil HackX hackathon Project\V05\backend"
+& "Y:\Nikhil HackX hackathon Project\V05\venv\Scripts\python.exe" -m uvicorn main:app --reload
+```
+
+### Running the Frontend
+```powershell
+cd "Y:\Nikhil HackX hackathon Project\V05\Frontend"
+npm run dev
+```
+
+Alternatively, you can use the provided batch script that starts both services:
 ```
 start-dev.bat
 ```
-
-This will start both the frontend and backend servers in separate terminal windows.
 
 ## Documentation
 

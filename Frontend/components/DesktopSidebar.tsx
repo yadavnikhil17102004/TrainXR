@@ -1,8 +1,10 @@
 "use client";
 
-import { Home, Camera, User, Glasses, Plus } from 'lucide-react';
+import { Home, Camera, User, Glasses, Plus, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/components/ui/utils';
+import { useTheme } from 'next-themes';
+import { useState, useEffect } from 'react';
 
 interface DesktopSidebarProps {
   activeTab: 'home' | 'ar' | 'record' | 'profile';
@@ -11,6 +13,18 @@ interface DesktopSidebarProps {
 }
 
 export function DesktopSidebar({ activeTab, onTabChange, onRecordSession }: DesktopSidebarProps) {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure component is mounted before accessing theme
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
     <div className="hidden md:flex md:w-20 lg:w-64 h-screen bg-background border-r border-border flex-col dark:bg-gray-900">
       <div className="p-4 border-b border-border">
@@ -73,6 +87,28 @@ export function DesktopSidebar({ activeTab, onTabChange, onRecordSession }: Desk
       </div>
       
       <div className="p-4 border-t border-border">
+        {/* Theme Toggle Button - Always visible */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="mb-2 w-full justify-start px-4 py-6 hidden lg:flex"
+          onClick={toggleTheme}
+        >
+          {mounted && theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+          <span className="ml-3">Theme</span>
+        </Button>
+        
+        {/* Theme Toggle Icon Button - Visible on smaller sidebar */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="mb-2 mx-auto lg:hidden"
+          onClick={toggleTheme}
+        >
+          {mounted && theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+        </Button>
+        
+        {/* Record Session Button */}
         <Button
           className="w-full py-6 hidden lg:flex dark:bg-accent dark:hover:bg-accent/90"
           onClick={onRecordSession}
