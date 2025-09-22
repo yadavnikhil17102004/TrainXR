@@ -6,6 +6,8 @@ import {
   CheckIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+} from "@radix-ui/react-icons";
+import { cn } from "./utils";
 
 function Accordion({
   ...props

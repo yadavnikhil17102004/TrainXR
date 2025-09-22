@@ -106,3 +106,59 @@ The frontend communicates with the backend through the following API endpoints:
 - CORS is configured to allow requests from localhost:3000 and localhost:5173
 - Video files are temporarily stored in the `uploads/` directory during analysis
 - The backend uses MediaPipe for pose estimation and exercise analysis
+
+## Browser Support
+
+The camera recording feature now has improved compatibility across browsers and mobile devices:
+
+### Desktop Browsers
+- **Chrome**: Version 60+
+- **Firefox**: Version 56+
+- **Safari**: Version 14+
+- **Edge**: Version 79+
+
+### Mobile Browsers
+- **iOS Safari**: Version 14+
+- **Android Chrome**: Version 60+
+- **Android Firefox**: Version 56+
+
+### Cross-Platform Features
+
+Our updated implementation includes:
+- Automatic camera detection and fallback mechanisms
+- Support for both front and rear cameras on mobile devices
+- Cross-browser compatible video recording using WebM format
+- Graceful degradation for browsers with limited MediaRecorder support
+- Camera switching capability on mobile devices
+
+## Camera Access Troubleshooting
+
+If you're having issues with camera access:
+
+1. **No permission popup appears:**
+   - Make sure you're accessing the app via `http://localhost:3000` or `https://localhost:3000`
+   - Check that your browser supports camera access
+   - Ensure no other applications are using your camera
+
+2. **Permission denied error:**
+   - Click the camera icon in your browser's address bar
+   - Select "Always allow" or "Allow" for camera access
+   - Reload the page and try again
+
+3. **Camera not found error:**
+   - Check that your camera is properly connected
+   - Restart your computer and try again
+   - Test your camera in another application
+
+4. **Mobile-specific solutions:**
+   - Make sure you're accessing the app via a secure connection (https)
+   - Try switching between front and rear cameras using the "Flip Camera" button
+   - Close other apps that might be using the camera
+
+5. **Browser-specific solutions:**
+   - **Chrome:** Click the camera icon in address bar → Select "Always allow" → Reload
+   - **Firefox:** Click the camera icon in address bar → Select "Remember this decision" → Reload
+   - **Safari:** Go to Preferences → Websites → Camera → Select "Allow" for this site
+   - **Mobile Safari:** Ensure you're using iOS 14+ and have enabled camera permissions
+
+If you continue to have issues, try using the "Upload Video" button to analyze a pre-recorded video instead.

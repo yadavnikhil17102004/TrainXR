@@ -98,8 +98,8 @@ export default function App() {
               </div>
             )}
             {activeTab === 'record' && (
-              <div className="flex flex-col items-center justify-center h-96 bg-gradient-to-br from-green-50 to-teal-50 rounded-xl dark:from-gray-800 dark:to-gray-900">
-                <div className="text-center max-w-md">
+              <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] md:min-h-[calc(100vh-150px)]">
+                <div className="text-center max-w-md w-full">
                   <div className="bg-green-100 dark:bg-green-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Camera className="h-8 w-8 text-green-600 dark:text-green-400" />
                   </div>

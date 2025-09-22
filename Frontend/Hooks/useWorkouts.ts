@@ -3,32 +3,6 @@
 import { useState, useEffect } from 'react';
 import { apiClient, Workout, Stats, SuggestedExercise } from '../utils/apiClient';
 
-export interface Workout {
-  id: string;
-  exercise: string;
-  sets: Array<{ reps: string; weight: string }>;
-  duration: string;
-  date: string;
-  createdAt: string;
-}
-
-export interface Stats {
-  totalWorkouts: number;
-  workoutsThisMonth: number;
-  currentStreak: number;
-  weightData: Array<{ date: string; value: number }>;
-  workoutData: Array<{ date: string; value: number }>;
-}
-
-export interface SuggestedExercise {
-  id: string;
-  name: string;
-  category: string;
-  muscle: string;
-  lastPerformed: string;
-  trend: 'up' | 'down' | 'same';
-}
-
 export function useWorkouts() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);

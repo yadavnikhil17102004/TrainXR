@@ -118,6 +118,10 @@ echo.
 echo Frontend will be available at:
 echo - http://localhost:3000
 echo.
+echo For camera access to work properly:
+echo - Make sure you access the frontend at http://localhost:3000
+echo - Camera features require a secure context (localhost or HTTPS)
+echo.
 echo If you encounter any issues:
 echo 1. Check the server windows for error messages
 echo 2. Make sure all dependencies are installed
@@ -126,19 +130,4 @@ echo 4. Check if Python and Node.js are in PATH
 echo.
 echo Press Ctrl+C in the respective windows to stop the servers
 echo Press any key to exit this window...
-pause >nul
-
-echo.
-echo 2. Starting Frontend Development Server...
-cd ..\frontend
-start "Frontend Server" cmd /k "npm run dev"
-
-echo.
-echo Both servers are starting up!
-echo.
-echo Frontend will be available at: http://localhost:5173
-echo Backend API will be available at: http://localhost:8000
-echo Backend API Docs will be available at: http://localhost:8000/docs
-echo.
-echo Press any key to exit...
 pause >nul

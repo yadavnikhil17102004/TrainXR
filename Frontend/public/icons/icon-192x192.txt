@@ -1,0 +1,3 @@
+// This is a placeholder for a gym-themed icon
+// You can replace this with actual icon images later
+// The emoji representation of our app would be: 🏋️‍♂️ or 💪

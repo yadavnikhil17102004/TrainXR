@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { useExerciseAnalysis } from '../Hooks/useExerciseAnalysis';
+import { useCamera } from '../Hooks/useCamera';
 import { toast } from 'sonner';
-import { Camera, Video, Square } from 'lucide-react';
+import { Camera, Video, Square, RotateCcw } from 'lucide-react';
 
 interface RecordSessionModalProps {
   isOpen: boolean;
@@ -22,61 +23,106 @@ export function RecordSessionModal({ isOpen, onClose, onSave }: RecordSessionMod
   const [reps, setReps] = useState(10);
   const [isRecording, setIsRecording] = useState(false);
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const recordedChunksRef = useRef<Blob[]>([]);
   
   const { analyzeExercise, isAnalyzing, analysisResult, error, clearAnalysis } = useExerciseAnalysis();
+  const { 
+    videoRef, 
+    isCameraActive, 
+    cameraError, 
+    facingMode, 
+    startCamera, 
+    stopCamera, 
+    switchCamera,
+    cleanup: cleanupCamera 
+  } = useCamera();
+
+  // Clean up camera when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      stopCamera();
+      cleanupCamera();
+    }
+  }, [isOpen, stopCamera, cleanupCamera]);
 
   const startRecording = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-      streamRef.current = stream;
+      console.log("Starting camera...");
+      // Start camera
+      const stream = await startCamera();
+      console.log("Camera started, stream:", stream);
       
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+      // Initialize MediaRecorder with cross-browser compatible options
+      const options = { mimeType: 'video/webm;codecs=vp9' };
+      
+      // Check if the preferred mimeType is supported
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        // Try alternative codecs
+        if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
+          options.mimeType = 'video/webm;codecs=vp8';
+        } else if (MediaRecorder.isTypeSupported('video/webm')) {
+          options.mimeType = 'video/webm';
+        } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+          options.mimeType = 'video/mp4';
+        } else {
+          // Fallback to default
+          options.mimeType = '';
+        }
       }
       
-      const mediaRecorder = new MediaRecorder(stream);
+      // Create MediaRecorder with selected options
+      const mediaRecorder = new MediaRecorder(stream, options);
       mediaRecorderRef.current = mediaRecorder;
+      recordedChunksRef.current = [];
       
-      const chunks: Blob[] = [];
+      // Set up event listeners
       mediaRecorder.ondataavailable = (event) => {
-        chunks.push(event.data);
+        if (event.data.size > 0) {
+          recordedChunksRef.current.push(event.data);
+        }
       };
       
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'video/mp4' });
+        const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
         setVideoBlob(blob);
       };
       
+      // Start recording
       mediaRecorder.start();
       setIsRecording(true);
+      console.log("Recording started");
     } catch (err) {
-      console.error('Error accessing camera:', err);
-      toast.error('Could not access camera. Please check permissions.');
+      console.error('Recording error:', err);
+      toast.error(cameraError || 'Camera not available. Try the Upload Video button instead.');
     }
-  }, []);
+  }, [startCamera, cameraError]);
 
   const stopRecording = useCallback(() => {
+    console.log("Stopping recording...");
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
     }
-  }, [isRecording]);
+    stopCamera();
+    setIsRecording(false);
+    console.log("Recording stopped");
+  }, [isRecording, stopCamera]);
 
   const handleAnalyze = useCallback(async () => {
-    if (!videoBlob || !exerciseType) {
-      toast.error('Please record a video and select an exercise type.');
+    if (!exerciseType) {
+      toast.error('Please select an exercise type.');
+      return;
+    }
+    
+    if (!videoBlob) {
+      toast.error('Please record a video first.');
       return;
     }
     
     try {
-      const videoFile = new File([videoBlob], 'exercise_recording.mp4', { type: 'video/mp4' });
+      // Create a video file for analysis
+      const videoFile = new File([videoBlob], 'exercise_recording.webm', { type: 'video/webm' });
+      
       const result = await analyzeExercise(exerciseType, sets, reps, videoFile);
       
       // Save session data
@@ -93,24 +139,23 @@ export function RecordSessionModal({ isOpen, onClose, onSave }: RecordSessionMod
     } catch (err) {
       toast.error('Failed to analyze exercise. Please try again.');
     }
-  }, [videoBlob, exerciseType, sets, reps, analyzeExercise, onSave]);
+  }, [exerciseType, sets, reps, videoBlob, analyzeExercise, onSave]);
 
   const handleClose = useCallback(() => {
     // Clean up
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-    }
+    stopRecording();
+    cleanupCamera();
     clearAnalysis();
     setVideoBlob(null);
     setExerciseType('');
     setSets(3);
     setReps(10);
     onClose();
-  }, [onClose, clearAnalysis]);
+  }, [onClose, stopRecording, cleanupCamera, clearAnalysis]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-md dark:bg-gray-800 dark:border-gray-700">
+      <DialogContent className="max-w-md dark:bg-gray-800 dark:border-gray-700 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="dark:text-white">Record Exercise Session</DialogTitle>
           <DialogDescription className="dark:text-gray-400">
@@ -119,6 +164,12 @@ export function RecordSessionModal({ isOpen, onClose, onSave }: RecordSessionMod
         </DialogHeader>
         
         <div className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm dark:bg-blue-900/20 dark:border-blue-800">
+            <div className="font-medium text-blue-800 dark:text-blue-200 mb-1">Camera Access</div>
+            <p className="text-blue-700 dark:text-blue-300">
+              Click "Start Recording" to access your camera. If it doesn't work, try the "Upload Video" button.
+            </p>
+          </div>
           <div className="space-y-2">
             <Label htmlFor="exercise-type" className="dark:text-gray-300">Exercise Type</Label>
             <Select value={exerciseType} onValueChange={setExerciseType}>
@@ -161,8 +212,16 @@ export function RecordSessionModal({ isOpen, onClose, onSave }: RecordSessionMod
           <div className="space-y-2">
             <Label className="dark:text-gray-300">Record Video</Label>
             <div className="border rounded-lg overflow-hidden bg-black aspect-video flex items-center justify-center dark:border-gray-600">
-              {isRecording ? (
-                <video ref={videoRef} autoPlay muted className="w-full h-full object-cover" />
+              {isCameraActive ? (
+                <video 
+                  ref={videoRef} 
+                  autoPlay 
+                  muted 
+                  playsInline 
+                  className="w-full h-full object-cover"
+                  onPlay={() => console.log("Video is playing")}
+                  onError={(e) => console.error("Video error:", e)}
+                />
               ) : videoBlob ? (
                 <video src={URL.createObjectURL(videoBlob)} controls className="w-full h-full object-cover" />
               ) : (
@@ -194,7 +253,44 @@ export function RecordSessionModal({ isOpen, onClose, onSave }: RecordSessionMod
                   Stop Recording
                 </Button>
               )}
+              {isCameraActive && (
+                <Button 
+                  onClick={switchCamera}
+                  variant="outline"
+                  className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                >
+                  <RotateCcw className="mr-2 h-4 w-4" />
+                  Flip Camera
+                </Button>
+              )}
+              <Button 
+                variant="outline" 
+                className="flex-1 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                onClick={() => document.getElementById('video-upload')?.click()}
+              >
+                <Video className="mr-2 h-4 w-4" />
+                Upload Video
+              </Button>
+              <input
+                id="video-upload"
+                type="file"
+                accept="video/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setVideoBlob(file);
+                    toast.success('Video uploaded successfully!');
+                  }
+                }}
+              />
             </div>
+            
+            {cameraError && (
+              <div className="text-red-500 text-sm dark:text-red-400">
+                Camera Error: {cameraError}
+              </div>
+            )}
           </div>
           
           {analysisResult && (
