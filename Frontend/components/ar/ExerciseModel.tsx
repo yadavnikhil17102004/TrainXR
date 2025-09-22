@@ -11,49 +11,64 @@ interface ExerciseModelProps {
 
 export function ExerciseModel({ url }: ExerciseModelProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const { scene, animations } = useGLTF(url);
-  const { actions } = useAnimations(animations, groupRef);
   
-  const [isAnimating, setIsAnimating] = useState(true);
-
-  // Play all animations
-  useEffect(() => {
-    if (actions && isAnimating) {
-      // Play all animations
-      Object.values(actions).forEach((action) => {
-        if (action) {
-          action.play();
-        }
-      });
-    }
+  // Handle loading errors gracefully
+  try {
+    const { scene, animations } = useGLTF(url);
+    const { actions } = useAnimations(animations, groupRef);
     
-    // Cleanup function
-    return () => {
-      if (actions) {
+    const [isAnimating, setIsAnimating] = useState(true);
+
+    // Play all animations
+    useEffect(() => {
+      if (actions && isAnimating) {
+        // Play all animations
         Object.values(actions).forEach((action) => {
           if (action) {
-            action.stop();
+            action.play();
           }
         });
       }
-    };
-  }, [actions, isAnimating]);
-
-  // Update animations
-  useFrame((state, delta) => {
-    if (actions && isAnimating) {
-      // Update all active actions
-      Object.values(actions).forEach((action) => {
-        if (action) {
-          action.time += delta;
+      
+      // Cleanup function
+      return () => {
+        if (actions) {
+          Object.values(actions).forEach((action) => {
+            if (action) {
+              action.stop();
+            }
+          });
         }
-      });
-    }
-  });
+      };
+    }, [actions, isAnimating]);
 
-  return (
-    <group ref={groupRef} scale={[1.5, 1.5, 1.5]} dispose={null}>
-      <primitive object={scene} />
-    </group>
-  );
+    // Update animations
+    useFrame((state, delta) => {
+      if (actions && isAnimating) {
+        // Update all active actions
+        Object.values(actions).forEach((action) => {
+          if (action) {
+            action.time += delta;
+          }
+        });
+      }
+    });
+
+    return (
+      <group ref={groupRef} scale={[1.5, 1.5, 1.5]} dispose={null}>
+        <primitive object={scene} />
+      </group>
+    );
+  } catch (error) {
+    console.warn("Failed to load model:", url, error);
+    // Return a simple fallback object
+    return (
+      <group ref={groupRef} scale={[1.5, 1.5, 1.5]}>
+        <mesh>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color="red" />
+        </mesh>
+      </group>
+    );
+  }
 }

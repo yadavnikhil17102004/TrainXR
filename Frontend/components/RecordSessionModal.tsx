@@ -157,7 +157,7 @@ export function RecordSessionModal({ isOpen, onClose, onSave }: RecordSessionMod
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="max-w-md dark:bg-gray-800 dark:border-gray-700 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="dark:text-white">Record Exercise Session</DialogTitle>
+          <DialogTitle className="dark:text-white">Record Exercise Session - TrainXR</DialogTitle>
           <DialogDescription className="dark:text-gray-400">
             Record yourself performing an exercise to get real-time feedback.
           </DialogDescription>

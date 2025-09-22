@@ -21,11 +21,11 @@ export function HomeScreen({ onRecordSession }: HomeScreenProps) {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 text-white dark:from-blue-700 dark:to-purple-800">
         <h1 className="text-2xl font-bold mb-2">Welcome back, John!</h1>
-        <p className="opacity-90">Ready for another great workout today?</p>
+        <p className="opacity-90">Ready for another great workout with TrainXR today?</p>
       </div>
 
       {/* Calendar Section */}

@@ -10,9 +10,10 @@ interface DesktopSidebarProps {
   activeTab: 'home' | 'ar' | 'record' | 'profile';
   onTabChange: (tab: 'home' | 'ar' | 'record' | 'profile') => void;
   onRecordSession: () => void;
+  onManualEntry: () => void;
 }
 
-export function DesktopSidebar({ activeTab, onTabChange, onRecordSession }: DesktopSidebarProps) {
+export function DesktopSidebar({ activeTab, onTabChange, onRecordSession, onManualEntry }: DesktopSidebarProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -28,10 +29,10 @@ export function DesktopSidebar({ activeTab, onTabChange, onRecordSession }: Desk
   return (
     <div className="hidden md:flex md:w-20 lg:w-64 h-screen bg-background border-r border-border flex-col dark:bg-gray-900">
       <div className="p-4 border-b border-border">
-        <h1 className="text-xl font-bold hidden lg:block">GymTracker</h1>
+        <h1 className="text-xl font-bold hidden lg:block">TrainXR</h1>
         <div className="lg:hidden">
           <div className="bg-accent w-8 h-8 rounded-md flex items-center justify-center dark:bg-accent">
-            <span className="font-bold">G</span>
+            <span className="font-bold">T</span>
           </div>
         </div>
       </div>
@@ -40,8 +41,8 @@ export function DesktopSidebar({ activeTab, onTabChange, onRecordSession }: Desk
         <Button
           variant="ghost"
           className={cn(
-            "justify-start px-4 py-6 w-full",
-            activeTab === 'home' && "bg-accent dark:bg-accent"
+            "justify-start px-4 py-6 w-full hover:bg-accent hover:text-accent-foreground",
+            activeTab === 'home' && "bg-accent text-accent-foreground dark:bg-accent dark:text-accent-foreground"
           )}
           onClick={() => onTabChange('home')}
         >
@@ -52,8 +53,8 @@ export function DesktopSidebar({ activeTab, onTabChange, onRecordSession }: Desk
         <Button
           variant="ghost"
           className={cn(
-            "justify-start px-4 py-6 w-full",
-            activeTab === 'ar' && "bg-accent dark:bg-accent"
+            "justify-start px-4 py-6 w-full hover:bg-accent hover:text-accent-foreground",
+            activeTab === 'ar' && "bg-accent text-accent-foreground dark:bg-accent dark:text-accent-foreground"
           )}
           onClick={() => onTabChange('ar')}
         >
@@ -64,8 +65,8 @@ export function DesktopSidebar({ activeTab, onTabChange, onRecordSession }: Desk
         <Button
           variant="ghost"
           className={cn(
-            "justify-start px-4 py-6 w-full",
-            activeTab === 'record' && "bg-accent dark:bg-accent"
+            "justify-start px-4 py-6 w-full hover:bg-accent hover:text-accent-foreground",
+            activeTab === 'record' && "bg-accent text-accent-foreground dark:bg-accent dark:text-accent-foreground"
           )}
           onClick={() => onTabChange('record')}
         >
@@ -76,8 +77,8 @@ export function DesktopSidebar({ activeTab, onTabChange, onRecordSession }: Desk
         <Button
           variant="ghost"
           className={cn(
-            "justify-start px-4 py-6 w-full",
-            activeTab === 'profile' && "bg-accent dark:bg-accent"
+            "justify-start px-4 py-6 w-full hover:bg-accent hover:text-accent-foreground",
+            activeTab === 'profile' && "bg-accent text-accent-foreground dark:bg-accent dark:text-accent-foreground"
           )}
           onClick={() => onTabChange('profile')}
         >
@@ -91,7 +92,7 @@ export function DesktopSidebar({ activeTab, onTabChange, onRecordSession }: Desk
         <Button
           variant="ghost"
           size="icon"
-          className="mb-2 w-full justify-start px-4 py-6 hidden lg:flex"
+          className="mb-2 w-full justify-start px-4 py-6 hidden lg:flex hover:bg-accent hover:text-accent-foreground"
           onClick={toggleTheme}
         >
           {mounted && theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
@@ -102,26 +103,42 @@ export function DesktopSidebar({ activeTab, onTabChange, onRecordSession }: Desk
         <Button
           variant="ghost"
           size="icon"
-          className="mb-2 mx-auto lg:hidden"
+          className="mb-2 mx-auto lg:hidden hover:bg-accent hover:text-accent-foreground"
           onClick={toggleTheme}
         >
           {mounted && theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
         </Button>
         
-        {/* Record Session Button */}
+        {/* Manual Entry Button */}
         <Button
-          className="w-full py-6 hidden lg:flex dark:bg-accent dark:hover:bg-accent/90"
-          onClick={onRecordSession}
+          className="w-full py-6 hidden lg:flex dark:bg-accent dark:hover:bg-accent/90 hover:bg-accent/90 mb-2"
+          onClick={onManualEntry}
         >
           <Plus className="h-5 w-5 mr-2" />
+          Manual Entry
+        </Button>
+        <Button
+          size="icon"
+          className="rounded-full h-12 w-12 mx-auto lg:hidden dark:bg-accent dark:hover:bg-accent/90 hover:bg-accent/90 mb-2"
+          onClick={onManualEntry}
+        >
+          <Plus className="h-6 w-6" />
+        </Button>
+        
+        {/* Record Session Button */}
+        <Button
+          className="w-full py-6 hidden lg:flex dark:bg-accent dark:hover:bg-accent/90 hover:bg-accent/90"
+          onClick={onRecordSession}
+        >
+          <Camera className="h-5 w-5 mr-2" />
           Record Session
         </Button>
         <Button
           size="icon"
-          className="rounded-full h-12 w-12 mx-auto lg:hidden dark:bg-accent dark:hover:bg-accent/90"
+          className="rounded-full h-12 w-12 mx-auto lg:hidden dark:bg-accent dark:hover:bg-accent/90 hover:bg-accent/90"
           onClick={onRecordSession}
         >
-          <Plus className="h-6 w-6" />
+          <Camera className="h-6 w-6" />
         </Button>
       </div>
     </div>

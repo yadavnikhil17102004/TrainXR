@@ -26,7 +26,7 @@ const progressData = [
 
 export function ProfileScreen() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       {/* Profile Header */}
       <Card className="dark:bg-gray-800 dark:border-gray-700">
         <CardContent className="pt-6">
